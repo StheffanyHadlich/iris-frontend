@@ -1,39 +1,26 @@
-"use client";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/auth/repositories/user-repository";
 
-import { useEffect, useState } from "react";
-import api from "@/services/api";
-import { useRouter } from "next/navigation";
+export default async function DashboardPage() {
+  const token = (await cookies()).get("token")?.value;
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  if (!token) {
+    redirect("/auth/login");
+  }
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/auth/login");
-      return;
-    }
+  try {
+    const user = await getCurrentUser(token);
 
-    api
-      .get("/users/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUser(res.data))
-      .catch(() => {
-        localStorage.removeItem("token");
-        router.push("/auth/login");
-      });
-  }, [router]);
-
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>Dashboard</h1>
-      {user ? (
-        <p>Bem-vindo, {user.username} ({user.email})</p>
-      ) : (
-        <p>Carregando...</p>
-      )}
-    </div>
-  );
+    return (
+      <div style={{ padding: 20 }}>
+        <h1>Dashboard</h1>
+        <p>
+          Welcome, {user.username} ({user.email})
+        </p>
+      </div>
+    );
+  } catch {
+    redirect("/auth/login");
+  }
 }

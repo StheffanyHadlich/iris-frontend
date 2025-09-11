@@ -1,20 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { login } from "@/services/auth";
+import { useForm } from "react-hook-form";
+import { loginAction } from "@/auth/actions/auth-actions";
 import { Mail, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+interface LoginInputs {
+  email: string;
+  password: string;
+}
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginInputs>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await login(email, password);
-      console.log("Usuário logado:", res);
-    } catch (err) {
-      console.error(err);
+  const onSubmit = async (data: LoginInputs) => {
+    const res = await loginAction(data.email, data.password);
+    if (res.success) {
+      router.push("/dashboard");
+    } else {
+      alert(res.message || "login failed.");
     }
   };
 
@@ -24,7 +29,7 @@ export default function LoginForm() {
         <img
           src="/iris-icon.jpg"
           alt="Logo"
-          className="w-50 h-50 rounded-full shadow-md"
+          className="w-20 h-20 rounded-full shadow-md"
         />
       </div>
 
@@ -32,36 +37,42 @@ export default function LoginForm() {
         Welcome Back
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="relative">
           <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
+            {...register("email", { required: "Email is required" })}
             className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           />
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email.message}</span>
+          )}
         </div>
 
         <div className="relative">
           <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
+            {...register("password", { required: "Password is required" })}
             className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           />
+          {errors.password && (
+            <span className="text-red-500 text-sm">{errors.password.message}</span>
+          )}
         </div>
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-orange-600 py-3 font-semibold text-white shadow-md hover:bg-orange-700 hover:shadow-lg transition"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-orange-600 py-3 font-semibold text-white shadow-md hover:bg-orange-700 hover:shadow-lg transition disabled:opacity-50"
         >
-          Log In
+          {isSubmitting ? "Logging..." : "Log In"}
         </button>
       </form>
+
       <p className="mt-6 text-center text-sm text-gray-600">
         Don’t have an account?{" "}
         <a
