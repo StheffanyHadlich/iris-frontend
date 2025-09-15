@@ -1,4 +1,5 @@
-import RegisterForm from "@/auth/components/register/RegisterForm";
+import dynamic from "next/dynamic";
+const RegisterForm = dynamic(() => import("@/auth/components/register/RegisterForm"), { ssr: false });
 
 export default function RegisterPage() {
   return (
