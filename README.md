@@ -27,13 +27,13 @@ Clone the repository and run the following commands:
 
 ```bash
 # Clone repository
-git clone https://github.com/StheffanyHadlich/iris-frontend.git
+$ git clone https://github.com/StheffanyHadlich/iris-frontend.git
 
 # Install dependencies
-npm install
+$ npm install
 
 # Run development server
-npm run dev
+$ npm run dev
 ```
 
 The application will be available at http://localhost:3001
