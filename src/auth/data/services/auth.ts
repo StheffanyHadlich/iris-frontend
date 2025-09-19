@@ -1,21 +1,14 @@
 import api from "./api";
+import type { User } from "@/auth/domain/entities/user";
 
-interface LoginResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    username: string;
-  };
+export interface LoginResponse {
+  access_token: string;
+  user: User;
 }
 
-interface RegisterResponse {
-  token?: string;
-  user: {
-    id: string;
-    email: string;
-    username: string;
-  };
+export interface RegisterResponse {
+  access_token?: string;
+  user: User;
 }
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
@@ -24,10 +17,6 @@ export async function login(email: string, password: string): Promise<LoginRespo
 }
 
 export async function register(username: string, email: string, password: string): Promise<RegisterResponse> {
-  const res = await api.post<RegisterResponse>("/auth/register", {
-    username,
-    email,
-    password,
-  });
+  const res = await api.post<RegisterResponse>("/auth/register", { username, email, password });
   return res.data;
 }
