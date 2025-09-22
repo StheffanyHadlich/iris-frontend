@@ -5,6 +5,7 @@ import { login as loginService, register as registerService } from "@/auth/data/
 
 type ActionResult = { success: true } | { success: false; message?: string };
 
+/* Log in the user by calling the login service, storing the returned token in an HTTP-only cookie.*/
 export async function loginAction(email: string, password: string): Promise<ActionResult> {
   try {
     const res = await loginService(email, password);
