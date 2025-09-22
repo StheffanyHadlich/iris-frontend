@@ -96,14 +96,13 @@ export default function RegisterForm() {
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-600">
-        Already have an account?{" "}
+        Already have an account?
+      </p>
         <a
           href="/auth/login"
-          className="text-orange-600 font-medium hover:underline"
-        >
+          className="text-orange-600 font-medium hover:underline">
           Log in
         </a>
-      </p>
     </div>
   );
 }
