@@ -6,7 +6,7 @@ export default async function DashboardPage() {
   const token = (await cookies()).get("token")?.value;
 
   if (!token) {
-    redirect("/user/login");
+    redirect("/auth/login");
   }
 
   try {
@@ -19,7 +19,6 @@ export default async function DashboardPage() {
       </div>
     );
   } catch (err) {
-    // if user fetch fails, redirect to login
-    redirect("/user/login");
+    redirect("/auth/login");
   }
 }
