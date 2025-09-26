@@ -1,5 +1,3 @@
-"use client";
-
 import RegisterForm from "@/auth/components/register/RegisterForm";
 
 export default function RegisterPage() {
