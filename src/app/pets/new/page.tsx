@@ -1,6 +1,4 @@
-"use client";
-
-import PetForm from "@/auth/components/new/PetForm";
+import PetForm from "@/pets/entities/new/PetForm";
 
 export default function NewPetPage() {
   return (

@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { createPetAction } from "@/auth/actions/pets-actions";
+import { createPetAction } from "@/pets/actions/pets-actions";
 import { PawPrint, Calendar, Scale } from "lucide-react";
 import { useState } from "react";
 

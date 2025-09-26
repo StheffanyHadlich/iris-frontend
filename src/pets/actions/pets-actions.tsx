@@ -1,18 +1,15 @@
 "use server";
 
-import api from "@/auth/data/services/api";
 import { cookies } from "next/headers";
+import { createPetRepository } from "@/pets/repository/pets.repository";
 
 export async function createPetAction(data: any) {
   try {
     const token = (await cookies()).get("token")?.value;
     if (!token) throw new Error("User not authenticated");
 
-    const response = await api.post("/pets", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    return response.data;
+    const pet = await createPetRepository(data, token);
+    return pet;
   } catch (error: any) {
     console.error("Error creating pet:", error.response?.data || error.message);
     throw new Error(
