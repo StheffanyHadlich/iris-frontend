@@ -3,15 +3,17 @@
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createPetAction } from "@/pets/actions/pets-actions";
-import { PawPrint, Calendar, Scale } from "lucide-react";
+import { PawPrint, Calendar } from "lucide-react";
 import { useState } from "react";
 
 type PetFormInputs = {
   name: string;
-  age: number;
-  type: string;
-  race?: string;
-  currentWeight?: number;
+  species: "DOG" | "CAT" | "BIRD" | "OTHER";
+  breed?: string;
+  color?: string;
+  sex?: "MALE" | "FEMALE" | "UNKNOWN";
+  dateOfBirth?: string;
+  castrated?: boolean;
   urlPhoto?: string;
   registrationDate: string;
 };
@@ -22,18 +24,13 @@ export default function PetForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<PetFormInputs>();
 
   const onSubmit = async (data: PetFormInputs) => {
     try {
-      const payload = {
-        ...data,
-        age: Number(data.age),
-        currentWeight: data.currentWeight ? Number(data.currentWeight) : undefined,
-      };
-
-      await createPetAction(payload);
+      await createPetAction(data);
       router.push("/pets?created=1");
     } catch (err: any) {
       setErrorMessage(err.message);
@@ -41,7 +38,7 @@ export default function PetForm() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-md mx-auto">
       <div className="flex justify-center mb-6">
         <PawPrint className="text-orange-600 w-12 h-12" />
       </div>
@@ -55,66 +52,106 @@ export default function PetForm() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="relative">
+        <div>
           <input
             type="text"
             placeholder="Pet name"
             {...register("name", { required: "Pet name is required" })}
-            className="w-full rounded-xl border border-gray-300 pl-3 pr-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
+            className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
           )}
         </div>
 
-        <div className="relative">
-          <input
-            type="number"
-            placeholder="Age"
-            {...register("age", {
-              required: "Age is required",
-              valueAsNumber: true,
-              min: { value: 0, message: "Age cannot be negative" },
-            })}
-            className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
-          />
-          {errors.age && (
-            <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>
-          )}
-        </div>
-
-        <div className="relative">
+        <div>
           <select
-            {...register("type", { required: "Pet species is required" })}
+            {...register("species", { required: "Pet species is required" })}
             className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           >
             <option value="">Select species</option>
-            <option value="dog">Dog 🐶</option>
-            <option value="cat">Cat 🐱</option>
-            <option value="bird">Bird 🐦</option>
-            <option value="other">Other 🐾</option>
+            <option value="DOG">Dog 🐶</option>
+            <option value="CAT">Cat 🐱</option>
+            <option value="BIRD">Bird 🐦</option>
+            <option value="OTHER">Other 🐾</option>
           </select>
-          {errors.type && (
-            <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
+          {errors.species && (
+            <p className="text-red-500 text-sm mt-1">{errors.species.message}</p>
           )}
         </div>
 
-        <div className="relative">
+        <div>
           <input
             type="text"
             placeholder="Breed (optional)"
-            {...register("race")}
+            {...register("breed")}
             className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           />
         </div>
 
-        <div className="relative flex items-center gap-2">
-          <Scale className="text-gray-400" size={20} />
+        <div>
           <input
-            type="number"
-            step="0.01"
-            placeholder="Current Weight (kg, optional)"
-            {...register("currentWeight", { valueAsNumber: true })}
+            type="text"
+            placeholder="Color (optional)"
+            {...register("color")}
+            className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="MALE"
+              {...register("sex")}
+              className="accent-orange-600"
+            />
+            Male
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="FEMALE"
+              {...register("sex")}
+              className="accent-orange-600"
+            />
+            Female
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="UNKNOWN"
+              {...register("sex")}
+              className="accent-orange-600"
+              defaultChecked
+            />
+            Unknown
+          </label>
+        </div>
+
+        <div className="relative">
+          <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input
+            type="date"
+            {...register("dateOfBirth")}
+            className="w-full rounded-xl border border-gray-300 pl-10 pr-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            {...register("castrated")}
+            className="accent-orange-600"
+          />
+          <span>Castrated</span>
+        </div>
+
+        <div>
+          <input
+            type="text"
+            placeholder="Photo URL (optional)"
+            {...register("urlPhoto")}
             className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           />
         </div>
@@ -133,15 +170,6 @@ export default function PetForm() {
               {errors.registrationDate.message}
             </p>
           )}
-        </div>
-
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Photo URL (optional)"
-            {...register("urlPhoto")}
-            className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
-          />
         </div>
 
         <div className="flex gap-4">
