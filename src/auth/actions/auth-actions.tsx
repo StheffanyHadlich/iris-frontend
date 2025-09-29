@@ -10,7 +10,7 @@ export async function loginAction(email: string, password: string): Promise<Acti
   try {
     const res = await loginService(email, password);
 
-    const token = res.access_token;
+    const token = res.accessToken;
     if (!token) {
       return { success: false, message: "No token returned from API" };
     }
@@ -29,12 +29,11 @@ export async function loginAction(email: string, password: string): Promise<Acti
   }
 }
 
-/* Register and automatically log in the user if registration returns a token. If not, attempt to log in right after registering.*/
 export async function registerAction(username: string, email: string, password: string): Promise<ActionResult> {
   try {
     const res = await registerService(username, email, password);
 
-    const token = res.access_token;
+    const token = res.accessToken;
     if (token) {
       (await cookies()).set("token", token, {
         httpOnly: true,
@@ -45,10 +44,9 @@ export async function registerAction(username: string, email: string, password: 
       return { success: true };
     }
 
-    // fallback: attempt login flow to get token automatically
     const loginRes = await loginService(email, password);
-    if (loginRes.access_token) {
-      (await cookies()).set("token", loginRes.access_token, {
+    if (loginRes.accessToken) {
+      (await cookies()).set("token", loginRes.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -60,7 +58,6 @@ export async function registerAction(username: string, email: string, password: 
     return { success: false, message: "Registration succeeded but could not authenticate" };
   } catch (err) {
     console.error("Register error:", err);
-    // try to surface backend message if available
     const message = (err as any)?.response?.data?.message ?? "Error registering user";
     return { success: false, message };
   }
