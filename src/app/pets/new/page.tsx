@@ -1,4 +1,4 @@
-import PetForm from "@/pets/entities/new/PetForm";
+import PetForm from "@/pets/components/PetForm";
 
 export default function NewPetPage() {
   return (
