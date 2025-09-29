@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createPetAction } from "@/pets/actions/pets-actions";
 import { PawPrint, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type PetFormInputs = {
   name: string;
-  species: "DOG" | "CAT" | "BIRD" | "OTHER";
+  species: string;
   breed?: string;
   color?: string;
   sex?: "MALE" | "FEMALE" | "UNKNOWN";
@@ -21,12 +21,30 @@ type PetFormInputs = {
 export default function PetForm() {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
+  const [speciesOptions, setSpeciesOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<PetFormInputs>();
+
+  useEffect(() => {
+    async function fetchSpecies() {
+      try {
+        const res = await fetch("/api/pets/species");
+        if (!res.ok) throw new Error("Failed to load species");
+        const data = await res.json();
+        setSpeciesOptions(data);
+      } catch (err: any) {
+        console.error(err);
+        setErrorMessage("Could not load species options");
+      }
+    }
+    fetchSpecies();
+  }, []);
 
   const onSubmit = async (data: PetFormInputs) => {
     try {
@@ -70,10 +88,11 @@ export default function PetForm() {
             className="w-full rounded-xl border border-gray-300 px-3 py-3 text-gray-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-400 transition"
           >
             <option value="">Select species</option>
-            <option value="DOG">Dog 🐶</option>
-            <option value="CAT">Cat 🐱</option>
-            <option value="BIRD">Bird 🐦</option>
-            <option value="OTHER">Other 🐾</option>
+            {speciesOptions.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
           </select>
           {errors.species && (
             <p className="text-red-500 text-sm mt-1">{errors.species.message}</p>
