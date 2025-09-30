@@ -1,27 +1,29 @@
-import React from 'react';
-import { Pet } from '@/pets/domain/entities/new/pets';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { Edit2, Heart } from 'lucide-react';
+import React from "react";
+import { Pet } from "@/pets/domain/entities/pets";
+import { Card, CardContent, CardHeader } from "@/common/components/card/card";
+import { Button } from "@/common/components/button/button";
+import Image from "next/image";
+import { Edit2, Heart } from "lucide-react";
 
 interface PetCardProps {
   pet: Pet;
 }
 
 export default function PetCard({ pet }: PetCardProps) {
-  const isValidImageUrl = (url: string | undefined): boolean => {
+  const isValidImageUrl = (url?: string): boolean => {
     if (!url) return false;
-    if (typeof url === 'number') return false;
-    if (url.trim() === '') return false;
-    if (/^\d+$/.test(url)) return false;
-    
-    return url.startsWith('http') || 
-           url.startsWith('https') || 
-           url.startsWith('/');
+    if (url.trim() === "") return false;
+
+    return (
+      url.startsWith("http://") ||
+      url.startsWith("https://") ||
+      url.startsWith("/")
+    );
   };
 
-  const imageSrc = isValidImageUrl(pet.urlPhoto) ? pet.urlPhoto! : '/default-pet.png';
+  const imageSrc = isValidImageUrl(pet.urlPhoto)
+    ? pet.urlPhoto!
+    : "/default-pet.png";
 
   return (
     <Card className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-orange-200 hover:border-orange-300 overflow-hidden">
@@ -35,7 +37,7 @@ export default function PetCard({ pet }: PetCardProps) {
               height={120}
               className="rounded-full object-cover border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105"
               onError={(e) => {
-                e.currentTarget.src = '/default-pet.png';
+                e.currentTarget.src = "/default-pet.png";
               }}
             />
           </div>
@@ -57,24 +59,28 @@ export default function PetCard({ pet }: PetCardProps) {
             {pet.breed || pet.species}
           </p>
         </div>
-        
+
         <div className="flex justify-between items-center mb-4 px-2">
           <div className="text-center">
-            <div className="text-xs text-orange-500 uppercase tracking-wide">Species</div>
-            <div className="text-sm font-semibold text-orange-800">{pet.species}</div>
+            <div className="text-xs text-orange-500 uppercase tracking-wide">
+              Species
+            </div>
+            <div className="text-sm font-semibold text-orange-800">
+              {pet.species}
+            </div>
           </div>
           <div className="w-px h-8 bg-orange-200"></div>
           <div className="text-center">
-            <div className="text-xs text-orange-500 uppercase tracking-wide">Breed</div>
+            <div className="text-xs text-orange-500 uppercase tracking-wide">
+              Breed
+            </div>
             <div className="text-sm font-semibold text-orange-800">
-              {pet.breed || 'Mixed'}
+              {pet.breed || "Mixed"}
             </div>
           </div>
         </div>
 
-        <Button 
-          className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group/btn"
-        >
+        <Button className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group/btn">
           <Edit2 className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
           Edit Profile
         </Button>

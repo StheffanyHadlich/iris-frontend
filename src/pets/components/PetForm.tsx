@@ -5,18 +5,8 @@ import { useRouter } from "next/navigation";
 import { createPetAction } from "@/pets/actions/pets-actions";
 import { PawPrint, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
-
-type PetFormInputs = {
-  name: string;
-  species: string;
-  breed?: string;
-  color?: string;
-  sex?: "MALE" | "FEMALE" | "UNKNOWN";
-  dateOfBirth?: string;
-  castrated?: boolean;
-  urlPhoto?: string;
-  registrationDate: string;
-};
+import { PetFormInputs } from "@/pets/domain/entities/pets";
+import { fetchSpeciesRepository } from "@/pets/data/repository/pets.repository";
 
 export default function PetForm() {
   const router = useRouter();
@@ -32,18 +22,16 @@ export default function PetForm() {
   } = useForm<PetFormInputs>();
 
   useEffect(() => {
-    async function fetchSpecies() {
+    async function loadSpecies() {
       try {
-        const res = await fetch("/api/pets/species");
-        if (!res.ok) throw new Error("Failed to load species");
-        const data = await res.json();
+        const data = await fetchSpeciesRepository();
         setSpeciesOptions(data);
       } catch (err: any) {
         console.error(err);
         setErrorMessage("Could not load species options");
       }
     }
-    fetchSpecies();
+    loadSpecies();
   }, []);
 
   const onSubmit = async (data: PetFormInputs) => {
