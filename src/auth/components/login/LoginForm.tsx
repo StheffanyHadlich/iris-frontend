@@ -17,7 +17,7 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginInputs) => {
     const res = await loginAction(data.email, data.password);
     if (res.success) {
-      router.push("/dashboard");
+      router.push("/pets");
     } else {
       alert(res.message || "login failed.");
     }

@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { createPetRepository } from "@/pets/repository/pets.repository";
+import { createPetRepository } from "@/pets/data/repository/pets.repository";
 
 export async function createPetAction(data: any) {
   try {
