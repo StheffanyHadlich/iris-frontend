@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchPets } from "@/pets/data/services/fetchPets";
-import { Pet } from "@/pets/domain/entities/pets";
+import { Pet } from "@/pets/domain/entities/pets.types";
 import PetCard from "@/pets/components/PetCard";
 import { Button } from "@/common/components/button/button";
 import { Plus, PawPrint } from "lucide-react";

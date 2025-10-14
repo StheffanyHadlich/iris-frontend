@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createPetAction } from "@/pets/actions/pets-actions";
 import { PawPrint, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
-import { PetFormInputs } from "@/pets/domain/entities/pets";
+import { PetFormInputs } from "@/pets/domain/entities/pets.types";
 import { fetchSpeciesRepository } from "@/pets/data/repository/pets.repository";
 
 export default function PetForm() {
