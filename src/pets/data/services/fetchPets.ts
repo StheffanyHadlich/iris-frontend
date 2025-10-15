@@ -1,5 +1,5 @@
 import api from '@/auth/data/services/api';
-import { Pet } from '@/pets/domain/entities/pets';
+import { Pet } from '@/pets/domain/entities/pets.types';
 
 export async function fetchPets(): Promise<Pet[]> {
   try {

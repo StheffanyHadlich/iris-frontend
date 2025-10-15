@@ -1,5 +1,5 @@
 import React from "react";
-import { Pet } from "@/pets/domain/entities/pets";
+import { Pet } from "@/pets/domain/entities/pets.types";
 import { Card, CardContent, CardHeader } from "@/common/components/card/card";
 import { Button } from "@/common/components/button/button";
 import Image from "next/image";

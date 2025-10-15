@@ -17,3 +17,14 @@ export type PetFormInputs = {
   urlPhoto?: string;
   registrationDate: string;
 };
+
+export interface DiaryEntry {
+  id: number;
+  petId: number;
+  dailyDate: string;
+  weight?: string | null;
+  notes?: string | null;
+  prescriptionNotes?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}

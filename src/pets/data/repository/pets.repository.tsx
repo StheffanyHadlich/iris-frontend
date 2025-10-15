@@ -1,5 +1,5 @@
 import api from "@/auth/data/services/api";
-import { PetFormInputs } from "@/pets/domain/entities/pets";
+import { PetFormInputs } from "@/pets/domain/entities/pets.types";
 
 export async function createPetRepository(data: PetFormInputs, token: string) {
   const response = await api.post("/pets", data, {
