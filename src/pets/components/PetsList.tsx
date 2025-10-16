@@ -19,11 +19,19 @@ export default function PetsList() {
       try {
         const data = await fetchPets();
         setPets(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to load pets:", err);
-        
-        if (err.response?.status === 401) {
-          setError("Please log in to view your pets.");
+
+        if (typeof err === "object" && err !== null && "response" in err) {
+          const axiosErr = err as { response?: { status?: number } };
+          if (axiosErr.response?.status === 401) {
+            setError("Please log in to view your pets.");
+            return;
+          }
+        }
+
+        if (err instanceof Error) {
+          setError(err.message);
         } else {
           setError("Failed to load pets. Please try again.");
         }
@@ -35,20 +43,22 @@ export default function PetsList() {
     loadPets();
   }, [router]);
 
-  if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh]">
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-600 mb-4"></div>
-      <p className="text-lg text-orange-700 font-medium">Loading your pets...</p>
-    </div>
-  );
-
-  if (error) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-      <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl max-w-md">
-        <p className="font-semibold">{error}</p>
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-600 mb-4"></div>
+        <p className="text-lg text-orange-700 font-medium">Loading your pets...</p>
       </div>
-    </div>
-  );
+    );
+
+  if (error)
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl max-w-md">
+          <p className="font-semibold">{error}</p>
+        </div>
+      </div>
+    );
 
   const handleAddPet = () => router.push("/pets/new");
   
