@@ -26,8 +26,12 @@ export default function PetForm() {
       try {
         const data = await fetchSpeciesRepository();
         setSpeciesOptions(data);
-      } catch (err: any) {
-        console.error(err);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error(err.message);
+        } else {
+          console.error("Unknown error loading species", err);
+        }
         setErrorMessage("Could not load species options");
       }
     }
@@ -38,8 +42,12 @@ export default function PetForm() {
     try {
       await createPetAction(data);
       router.push("/pets?created=1");
-    } catch (err: any) {
-      setErrorMessage(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Unexpected error while saving pet");
+      }
     }
   };
 
