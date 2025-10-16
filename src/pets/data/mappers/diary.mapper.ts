@@ -1,5 +1,13 @@
 import { DiaryEntry } from "@/pets/domain/entities/pets.types";
 
+interface ApiDiaryResponse {
+  id: number;
+  date: string;
+  description: string;
+  petId: number;
+  createdAt: string;
+}
+
 export function toApiDiaryPayload(entry: Pick<DiaryEntry, "dailyDate" | "notes">) {
   return {
     date: entry.dailyDate,
@@ -7,7 +15,7 @@ export function toApiDiaryPayload(entry: Pick<DiaryEntry, "dailyDate" | "notes">
   };
 }
 
-export function fromApiDiaryResponse(apiData: any): DiaryEntry {
+export function fromApiDiaryResponse(apiData: ApiDiaryResponse): DiaryEntry {
   return {
     id: apiData.id,
     dailyDate: apiData.date,
