@@ -2,13 +2,7 @@ import DiaryList from "@/pets/components/DiaryList";
 import DiaryForm from "@/pets/components/DiaryForm";
 import { fetchPetDiary } from "@/pets/data/repository/petsDiary";
 
-interface PetDiaryPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function PetDiaryPage({ params }: PetDiaryPageProps) {
+export default async function PetDiaryPage({ params }: { params: { id: string } }) {
   const petId = Number(params.id);
   const entries = await fetchPetDiary(petId);
 
