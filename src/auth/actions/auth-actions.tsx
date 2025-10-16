@@ -38,3 +38,42 @@ export async function loginAction(email: string, password: string): Promise<Acti
     return { success: false, message: "Invalid credentials." };
   }
 }
+
+
+export async function registerAction(
+  username: string,
+  email: string,
+  password: string
+): Promise<ActionResult> {
+  try {
+    const res = await registerService(username, email, password);
+
+    const token = res.accessToken;
+    if (!token) {
+      return { success: false, message: "No token returned from API" };
+    }
+
+    const cookieStore = await cookies();
+    
+    cookieStore.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    cookieStore.set("token", token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return { success: true };
+  } catch (err) {
+    console.error("Register error:", err);
+    return { success: false, message: "Registration failed." };
+  }
+}

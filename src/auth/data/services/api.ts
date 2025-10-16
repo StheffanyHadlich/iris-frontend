@@ -15,10 +15,8 @@ api.interceptors.request.use(
       const tokenMatch = cookies.match(/token=([^;]+)/);
       
       if (tokenMatch && tokenMatch[1]) {
-        if (!config.headers) {
-          config.headers = {};
-        }
-        config.headers.Authorization = `Bearer ${tokenMatch[1]}`;
+        config.headers = config.headers || {};
+        (config.headers as Record<string, string>).Authorization = `Bearer ${tokenMatch[1]}`;
       }
     }
     return config;
