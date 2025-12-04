@@ -6,7 +6,7 @@ import { fetchPets } from "@/pets/data/services/fetchPets";
 import { Pet } from "@/pets/domain/entities/pets.types";
 import PetCard from "@/pets/components/PetCard";
 import { Button } from "@/common/components/button/button";
-import { Plus, PawPrint } from "lucide-react";
+import { Plus, PawPrint, Heart } from "lucide-react";
 
 export default function PetsList() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -61,7 +61,8 @@ export default function PetsList() {
     );
 
   const handleAddPet = () => router.push("/pets/new");
-  
+  const handleAdoption = () => router.push("/adoptions/new"); // Nova função
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="text-center mb-12">
@@ -88,12 +89,26 @@ export default function PetsList() {
               There are {pets.length} {pets.length === 1 ? 'pet' : 'pets'} in your care
             </p>
           </div>
-          <Button 
-            onClick={handleAddPet}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2">
-            <Plus className="w-5 h-5" />
-            Add New Pet
-          </Button>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Botão de Adoção */}
+            <Button 
+              onClick={handleAdoption}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <Heart className="w-5 h-5" />
+              Register Adoption
+            </Button>
+            
+            {/* Botão de Adicionar Pet */}
+            <Button 
+              onClick={handleAddPet}
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Pet
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -109,21 +124,45 @@ export default function PetsList() {
             <p className="text-orange-600 mb-6">
               You don't have any pets yet. Start by adding your first furry friend to your family!
             </p>
-            <Button 
-              onClick={handleAddPet}
-              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Your First Pet
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                onClick={handleAdoption}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <Heart className="w-5 h-5" />
+                Register Adoption
+              </Button>
+              <Button 
+                onClick={handleAddPet}
+                className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add Your First Pet
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {pets.map((pet) => (
-            <PetCard key={pet.id} pet={pet} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {pets.map((pet) => (
+              <PetCard key={pet.id} pet={pet} />
+            ))}
+          </div>
+          
+          {/* Botão adicional no final da lista */}
+          <div className="mt-10 text-center">
+            <Button 
+              onClick={handleAdoption}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2">
+              <Heart className="w-5 h-5" />
+              Start New Adoption Process
+            </Button>
+            <p className="text-gray-500 text-sm mt-3">
+              Found a loving home for a pet? Register the adoption here.
+            </p>
+          </div>
+        </>
       )}
     </div>
   );

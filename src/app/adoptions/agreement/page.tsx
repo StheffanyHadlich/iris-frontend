@@ -1,3 +1,5 @@
+"use client";
+
 import AdoptionAgreement from "@/adoptions/components/AdoptionAgreement";
 import { useSearchParams } from "next/navigation";
 

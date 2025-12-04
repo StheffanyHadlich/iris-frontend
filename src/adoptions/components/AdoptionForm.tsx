@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createAdoptionAction } from "@/adoptions/actions/adoption-actions";
-import { useAdoptionForm, type AdoptionFormData } from "./useAdoptionForm";
+import { useAdoptionForm, type AdoptionFormData, type Adopter } from "./useAdoptionForm";
 import AdoptionFormView from "./AdoptionFormView";
 
 interface AdoptionFormProps {
@@ -16,26 +16,49 @@ export default function AdoptionForm({ onSaved }: AdoptionFormProps) {
     adoptionDate: "",
   });
 
-  const { users, pets, loading, error } = useAdoptionForm();
+  const { adopters, pets, loading, error } = useAdoptionForm();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     const pet = pets.find((p) => p.id === Number(formData.petId));
-    if (!pet) return;
-
-    await createAdoptionAction({
-      adopterId: Number(formData.adopterId),
-      petId: Number(formData.petId),
+    const adopter = adopters.find((a) => a.id === Number(formData.adopterId));
+    
+    if (!pet) {
+      alert("Please select a valid pet");
+      return;
+    }
+    
+    if (!adopter) {
+      alert("Please select a valid adopter");
+      return;
+    }
+    
+    console.log("📤 Creating adoption:", {
+      adopterId: formData.adopterId,
+      petId: formData.petId,
       adoptionDate: formData.adoptionDate,
     });
 
-    onSaved?.(pet.name);
+    try {
+      await createAdoptionAction({
+        adopterId: Number(formData.adopterId),
+        petId: Number(formData.petId),
+        adoptionDate: formData.adoptionDate,
+      });
 
-    setFormData({
-      adopterId: "",
-      petId: "",
-      adoptionDate: "",
-    });
+      onSaved?.(pet.name);
+
+      setFormData({
+        adopterId: "",
+        petId: "",
+        adoptionDate: "",
+      });
+      
+      alert("Adoption created successfully!");
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
+    }
   };
 
   const handleInputChange = (
@@ -51,7 +74,7 @@ export default function AdoptionForm({ onSaved }: AdoptionFormProps) {
   return (
     <AdoptionFormView
       formData={formData}
-      users={users}
+      adopters={adopters}
       pets={pets}
       loading={loading}
       error={error}
